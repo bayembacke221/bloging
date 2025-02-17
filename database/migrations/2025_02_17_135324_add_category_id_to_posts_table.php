@@ -10,14 +10,8 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('posts', function (Blueprint $table) {
-            $table->id();
-            $table->string('title');
-            $table->string('slug')->unique();
-            $table->string('excerpt');
-            $table->text('content');
-            $table->string('thumbnail');
-            $table->timestamps();
+        Schema::table('posts', function (Blueprint $table) {
+            $table->foreignId('category_id')->after('id')->nullable()->constrained()->nullOnDelete();
         });
     }
 
@@ -26,6 +20,9 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('posts');
+        Schema::table('posts', function (Blueprint $table) {
+            $table->dropForeign(['category_id']);
+            $table->dropColumn('category_id');
+        });
     }
 };
